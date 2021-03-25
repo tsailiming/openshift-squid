@@ -1,0 +1,15 @@
+# Squid for OpenShift
+
+## Deploy to OpenShift 
+
+[source, bash]
+----
+$ oc create -f openshift-squid.yaml 
+----
+
+## Building Docker Image
+
+[source, bash]
+----
+$ buildah bud -f Dockerfile -t openshift-squid:latest
+----
