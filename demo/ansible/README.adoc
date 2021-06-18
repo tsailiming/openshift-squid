@@ -12,7 +12,6 @@ The main config can be found in link:vars/ns.yml[ns.yml].
 [source, bash]
 ----
 ansible-galaxy collection install community.general
-ansible-galaxy collection install community.general
 ansible-galaxy collection install community.kubernetes
 
 ansible-playbook deploy-squid.yml
