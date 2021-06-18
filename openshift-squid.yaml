@@ -26,12 +26,6 @@ spec:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always
-          volumeMounts:
-            - mountPath: /var/spool/squid
-              name: cache-volume  
-      volumes:
-        - name: cache-volume
-          emptyDir: {}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
