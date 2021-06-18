@@ -132,4 +132,4 @@ spec:
           defaultMode: 420
           sources:
           - configMap:
-              name: squid-users-whitelist---
+              name: squid-users-whitelist
