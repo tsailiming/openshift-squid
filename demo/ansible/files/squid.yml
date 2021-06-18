@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: squid
+  namespace: squid
+spec:
+  ports:
+  - name: 3128-tcp
+    port: 3128
+    protocol: TCP
+    targetPort: 3128
+  selector:
+    deployment: squid
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: squid
+  namespace: squid
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      deployment: squid
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: squid
+    spec:
+      containers:
+      - image: quay.io/ltsai/openshift-squid:latest
+        name: squid
+        ports:
+        - containerPort: 3128
+          protocol: TCP
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/squid/squid.conf
+          name: squid-conf
+          subPath: squid.conf
+        - mountPath: /etc/squid/passwd
+          name: squid-users
+          subPath: passwd
+        - mountPath: /etc/squid/whitelists
+          name: whitelist
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: squid-conf
+        name: squid-conf
+      - configMap:
+          defaultMode: 420
+          name: squid-users
+        name: squid-users
+      - name: whitelist
+        projected:
+          defaultMode: 420
+          sources:
+          - configMap:
+              name: squid-users-whitelist

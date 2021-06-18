@@ -1,0 +1,12 @@
+---
+namespace_config:
+  - name: user1-dev
+    username: user1
+    whitelists:
+    - .google.com
+    - .redhat.com
+  - name: user2-dev
+    username: user2
+    whitelists:
+    - .microsoft.com
+    - .apple.com

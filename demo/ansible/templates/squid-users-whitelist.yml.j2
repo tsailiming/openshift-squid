@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: squid-users-whitelist
+  namespace: squid
+data:
+{% for item in namespace_configs %}
+  {{item.username}}-whitelist.txt: |-
+{% for whitelist in item.whitelists %}
+    {{whitelist}}
+{% endfor %}  
+{% endfor %}

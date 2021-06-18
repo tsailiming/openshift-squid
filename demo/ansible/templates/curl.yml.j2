@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: curl  
+  namespace: "{{item.name}}"
+  labels:
+    app: curl    
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: curl
+  template:
+    metadata:
+      labels:
+        deployment: curl      
+    spec:
+      containers:
+        - name: curl
+          image: registry.access.redhat.com/ubi8/ubi-minimal:latest
+          command:
+            - tail
+          args:
+            - '-f'
+            - /dev/null    
+          env:
+            - name: http_proxy
+              valueFrom:
+                configMapKeyRef:
+                  name: http-proxy-env
+                  key: http_proxy          

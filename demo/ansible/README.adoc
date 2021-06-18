@@ -1,0 +1,19 @@
+
+# Deploy squid and setup http_proxy env for namespaces
+
+## Deploy to OpenShift 
+
+This generates a set of users/passwords and setup a whitelist for each user. The playbook 
+will create sample namespace and setup the `http_proxy` env for you.
+
+The main config can be found in link:vars/ns.yml[ns.yml].
+
+
+[source, bash]
+----
+ansible-galaxy collection install community.general
+ansible-galaxy collection install community.general
+ansible-galaxy collection install community.kubernetes
+
+ansible-playbook deploy-squid.yml
+----

@@ -1,0 +1,88 @@
+---
+- name: Deploy squid
+  hosts: localhost
+  connection: local
+
+  vars:
+    namespace_configs: []
+    x: []
+
+  tasks:
+  - include_vars: ns.yml
+
+  - name: Generate password
+    set_fact:
+      namespace_configs: "{{ namespace_configs + [item | combine(new_password)] }}"  
+    vars:
+      new_password: { 'password':  "{{lookup('password','/dev/null chars=ascii_letters,digits length=16') }}"}
+    loop: "{{namespace_config}}"
+
+  - name: Show namespace_configs var
+    debug:
+      var: namespace_configs
+
+  - name: Generate tempfile
+    ansible.builtin.tempfile:
+      state: file
+      suffix: temp
+    register: password_hash_file
+
+  - block:
+    - name: Generate password hash
+      community.general.htpasswd:
+        path: "{{password_hash_file.path}}"
+        name: "{{item.username}}"
+        password: "{{item.password}}"
+      loop: "{{namespace_configs}}"
+      when: password_hash_file.path is defined
+
+    - name: Create squid-users config map
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'squid-users-password.yml.j2') | from_yaml }}"
+
+    - name: Create squid-config config map
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'squid-conf.yml.j2') | from_yaml }}"
+
+    - name: Create squid-users-whitelist config map
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'squid-users-whitelist.yml.j2') | from_yaml }}"
+
+    - name: Deploy squid 
+      community.kubernetes.k8s:
+        state: present
+        apply: yes
+        definition: "{{ lookup('file', 'squid.yml') | from_yaml_all }}"
+
+    - name: Create test namespaces
+      community.kubernetes.k8s:
+        state: present
+        definition:
+          apiVersion: project.openshift.io/v1
+          kind: Project
+          metadata:
+            name: "{{item.name}}"
+      loop: "{{namespace_configs}}"
+    
+    - name: Create http_proxy env config map
+      community.kubernetes.k8s:
+        state: present
+        definition: "{{ lookup('template', 'http-proxy-env.yml.j2') | from_yaml }}"
+      loop: "{{namespace_configs}}"
+    
+    - name: Create curl deployment
+      community.kubernetes.k8s:
+        state: present
+        apply: yes
+        definition: "{{ lookup('template', 'curl.yml.j2') | from_yaml }}"                
+      loop: "{{namespace_configs}}"       
+
+    always:
+      - name: Remove tempfile 
+        ansible.builtin.file:
+          path: "{{password_hash_file.path}}"
+          state: absent
+        when: password_hash_file.path is defined

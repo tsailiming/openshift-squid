@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: squid-conf
+  namespace: squid
+data:
+  squid.conf: |-
+    pid_filename /tmp/${service_name}.pid
+    cache_dir null /tmp
+    logfile_rotate 0
+
+    cache_log stdio:/dev/null
+    access_log stdio:/dev/stdout
+    cache_store_log stdio:/dev/stdout
+
+    http_port 3128
+
+    auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd
+    auth_param basic children 5
+    auth_param basic realm Squid Basic Authentication
+    auth_param basic credentialsttl 24 hours
+    auth_param basic casesensitive off
+
+    acl http proto http
+    acl port_80 port 80
+    acl CONNECT method CONNECT
+    
+{% for item in namespace_configs %}
+    acl {{item.username}} proxy_auth {{item.username}}
+    acl {{item.username}}_whitelist dstdomain "/etc/squid/whitelists/{{item.username}}-whitelist.txt"
+    http_access allow {{item.username}}_whitelist {{item.username}} 
+
+{% endfor %}
+    
+    http_access deny all
