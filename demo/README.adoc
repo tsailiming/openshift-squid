@@ -1,0 +1,9 @@
+
+# Demo
+
+This `Deployment` setups a squid proxy server that requires user authentication and ACL with whitelists.
+
+[source, bash]
+----
+kubectl create -f squid.yaml
+----
