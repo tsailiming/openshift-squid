@@ -5,7 +5,6 @@
 
   vars:
     namespace_configs: []
-    x: []
 
   tasks:
   - include_vars: ns.yml
@@ -21,7 +20,7 @@
     debug:
       var: namespace_configs
 
-  - name: Generate tempfile
+  - name: Generate password hash temp file
     ansible.builtin.tempfile:
       state: file
       suffix: temp
