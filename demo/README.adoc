@@ -3,7 +3,7 @@
 
 This `Deployment` setups a squid proxy server that requires user authentication and ACL with whitelists.
 
-The user password is the same as the username, and are created with `htpasswd` with MD5.
+The user password is the same as the username, and is created with `htpasswd` with MD5.
 
 [source, bash]
 ----
@@ -15,4 +15,4 @@ You can test within a pod:
 [source, bash]
 ----
 $ env http_proxy=http://user1:user1@squid.squid.svc:3128 curl -vs http://google.com > /dev/null
----
+----
