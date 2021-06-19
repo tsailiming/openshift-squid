@@ -28,7 +28,7 @@ $ ansible-playbook deploy-squid.yml
 
 ## Sample namespace
 
-The playbook uses link:vars/ns.yml[ns.yml] to create the namespaces and setup a simple `curl` pod. You can then `kubectl exec` and run a simple curl command. The `http_proxy` enviroment variable will exists in the pod. 
+The playbook uses link:vars/ns.yml[ns.yml] to create the namespaces and setup a simple `curl` pod. You can then `oc exec` and run a simple curl command. The `http_proxy` enviroment variable will exists in the pod. 
 
 [source, bash]
 ----
