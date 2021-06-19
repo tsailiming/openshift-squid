@@ -35,5 +35,5 @@ The playbook uses link:vars/ns.yml[ns.yml] to create the namespaces and setup a 
 $ env | grep http_proxy
 http_proxy=http://username:password@squid.squid.svc:3128
 
-$ curl -vs http://google.com 2>/dev/null
+$ curl -vs http://google.com > /dev/null
 ----
