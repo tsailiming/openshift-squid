@@ -16,9 +16,7 @@ This playbook does the following tasks using link:vars/ns.yml[ns.yml].
 [source, bash]
 ----
 
-$ pip freeze | grep ansible
-ansible==4.1.0
-ansible-core==2.11.1
+$ pip3 install -r requirements.txt
 
 $ ansible-galaxy collection install community.general
 $ ansible-galaxy collection install community.kubernetes
