@@ -50,6 +50,15 @@
         state: present
         definition: "{{ lookup('template', 'squid-users-whitelist.yml.j2') | from_yaml }}"
 
+    - name: Create squid namespace
+      community.kubernetes.k8s:
+        state: present
+        definition:
+          apiVersion: project.openshift.io/v1
+          kind: Project
+          metadata:
+            name: squid
+
     - name: Deploy squid 
       community.kubernetes.k8s:
         state: present
