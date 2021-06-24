@@ -1,9 +1,16 @@
+# Test Squid in parent child configuration 
 
 # Architecture
 
 ```
-CURL_POD  ====>  SQUID (whitelisting)  ====>  SQUID-EXT  ====> INTERNET 
+NS user1-dev: CURL_POD  ====>  SQUID (whitelisting)  ====>  SQUID-EXT  ====> INTERNET 
+NS user2-dev: CURL_POD  ====>  SQUID (whitelisting)  X 
 ```
+
+curl google.com should be allowed from user1-dev namespace
+
+curl google.com should be disallowed from user1-dev namespace
+
 
 # Fetch the pod names
 
