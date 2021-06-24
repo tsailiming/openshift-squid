@@ -3,8 +3,9 @@
 # Architecture
 
 ```
-NS user1-dev: CURL_POD  ====>  SQUID (whitelisting)  ====>  SQUID-EXT  ====> INTERNET 
-NS user2-dev: CURL_POD  ====>  SQUID (whitelisting)  X 
+NS user1-dev: CURL_POD  ===\
+                            >===>  SQUID (whitelisting)  ====>  SQUID-EXT  ====> INTERNET 
+NS user2-dev: CURL_POD  ===/
 ```
 
 curl google.com should be allowed from user1-dev namespace
